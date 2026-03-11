@@ -1,31 +1,13 @@
 # metallb
 
-MetalLB load balancer for k3s, providing LoadBalancer service support on bare metal.
+MetalLB load balancer for k3s, providing LoadBalancer IP assignment for bare metal clusters.
 
 ## Files
 
 | File | Description |
 |------|-------------|
-| `ipaddresspool.yaml` | IP address pool assigned to LoadBalancer services |
-| `l2advertisement.yaml` | L2 advertisement config linking the pool to the network |
-
-## IP Address Pool
-
-| Range | Usage |
-|-------|-------|
-| `192.168.20.101` – `192.168.20.200` | Available for LoadBalancer services |
-
-Currently assigned static IPs:
-
-| IP | Service |
-|----|---------|
-| `192.168.20.190` | Mosquitto MQTT (`mosquitto` namespace) |
-
-> Update this table whenever a new static LoadBalancer IP is assigned.
-
-## Dependencies
-
-- A network that supports L2/ARP (standard home/homelab network)
+| `ipaddresspool.yaml` | IP address pool for LoadBalancer services |
+| `l2advertisement.yaml` | L2 advertisement configuration |
 
 ## Installation
 
@@ -38,15 +20,37 @@ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.15.3/confi
 Wait for all pods to be ready:
 
 ```bash
-kubectl get pods -n metallb-system
+kubectl get pods -n metallb-system -w
 ```
 
-Then apply the pool and advertisement config:
+Then apply the configuration:
 
 ```bash
 kubectl apply -f ipaddresspool.yaml
 kubectl apply -f l2advertisement.yaml
 ```
+
+## Configuration
+
+### IP Address Pool
+
+MetalLB is configured to assign IPs from the following range:
+
+| Setting | Value |
+|---------|-------|
+| Pool name | `first-pool` |
+| IP range | `192.168.20.101` – `192.168.20.200` |
+| Mode | L2 (ARP) |
+
+### Currently assigned IPs
+
+| Service | Namespace | IP | Description |
+|---------|-----------|-----|-------------|
+| ingress-nginx-controller-loadbalancer | ingress-nginx | dynamic | HTTP/HTTPS ingress |
+| mosquitto-service | mosquitto | 192.168.20.190 | MQTT broker |
+| technitium-dns-service | technitium | 192.168.20.199 | DNS server |
+
+> Update this table as new LoadBalancer services are added.
 
 ## Upgrading
 
@@ -70,23 +74,28 @@ kubectl rollout status deployment/controller -n metallb-system
 kubectl get pods -n metallb-system
 ```
 
-> ⚠️ Always check the [MetalLB upgrade notes](https://metallb.io/release-notes/) before upgrading.
+> ⚠️ Always check the [MetalLB upgrade notes](https://metallb.universe.tf/release-notes/) before upgrading.
 
-## Assigning a static IP to a service
+## Requesting a specific IP
 
-To request a specific IP for a LoadBalancer service, add `loadBalancerIP` to the service spec:
+To assign a specific IP to a LoadBalancer service, add the annotation to the service manifest:
 
 ```yaml
 spec:
   type: LoadBalancer
-  loadBalancerIP: 192.168.20.xxx
+  loadBalancerIP: 192.168.20.190
 ```
 
-The IP must be within the `192.168.20.101–192.168.20.200` range defined in `ipaddresspool.yaml`.
+Or use the MetalLB annotation for newer versions:
+
+```yaml
+metadata:
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: 192.168.20.190
+```
 
 ## Notes
 
 - MetalLB manifests are not stored in this repo — the official URL is the source of truth
-- L2 mode works by responding to ARP requests on the local network — no BGP or special router config needed
-- Only one node announces each IP at a time (leader election) — failover happens automatically if that node goes down
-- The IP pool must not overlap with your DHCP server's range to avoid conflicts
+- L2 mode uses ARP — only one node handles traffic for each IP at a time (no true HA)
+- Ensure assigned IPs are outside your router's DHCP range to avoid conflicts

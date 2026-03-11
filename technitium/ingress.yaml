@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: technitium-web-ingress
+  namespace: technitium
+  labels:
+    app.kubernetes.io/name: technitium-dnsserver
+    app.kubernetes.io/version: "14.3.0"
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  tls:
+    - hosts:
+        - technitium.petkus.id.lv
+      secretName: technitium-certificate-secret
+  ingressClassName: nginx
+  rules:
+    - host: technitium.petkus.id.lv
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: technitium-web-service
+                port:
+                  number: 80
