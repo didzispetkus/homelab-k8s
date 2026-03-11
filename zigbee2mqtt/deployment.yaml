@@ -66,6 +66,30 @@ spec:
               value: "true"
             - name: ZIGBEE2MQTT_CONFIG_FRONTEND_PACKAGE
               value: "zigbee2mqtt-windfront"
+            # Disable joining after initial setup
+            - name: ZIGBEE2MQTT_CONFIG_PERMIT_JOIN
+              value: "false"
+            # Fixed PAN ID — replace with your generated value
+            - name: ZIGBEE2MQTT_CONFIG_ADVANCED_PAN_ID
+              value: "24037"
+            # Network key from SealedSecret
+            - name: ZIGBEE2MQTT_CONFIG_ADVANCED_NETWORK_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: zigbee2mqtt-mqtt-secret
+                  key: network-key
+            # Log level
+            - name: ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_LEVEL
+              value: "info"
+            # Watchdog
+            - name: ZIGBEE2MQTT_CONFIG_ADVANCED_WATCHDOG
+              value: "default"
+            - name: ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_ENABLED
+              value: "true"
+            - name: ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_DISCOVERY_TOPIC
+              value: "homeassistant"
+            - name: ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_STATUS_TOPIC
+              value: "homeassistant/status"
           ports:
             - containerPort: 8080
               name: http
