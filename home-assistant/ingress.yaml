@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: home-assistant
+  namespace: home-assistant
+  labels:
+    app.kubernetes.io/name: home-assistant
+    app.kubernetes.io/version: "2026.3.1"
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/description: Home automation
+    gethomepage.dev/group: K3S
+    gethomepage.dev/icon: home-assistant.webp
+    gethomepage.dev/name: Home Assistant
+spec:
+  tls:
+    - hosts:
+        - haas.petkus.id.lv
+      secretName: home-assistant-certificate-secret
+  ingressClassName: nginx
+  rules:
+    - host: "haas.petkus.id.lv"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: home-assistant
+                port:
+                  number: 8123
