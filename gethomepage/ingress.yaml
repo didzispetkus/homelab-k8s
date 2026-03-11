@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: homepage
+  namespace: homepage
+  labels:
+    app.kubernetes.io/name: homepage
+  annotations:
+    gethomepage.dev/description: Dynamically Detected Homepage
+    gethomepage.dev/enabled: "false"
+    gethomepage.dev/group: Cluster Management
+    gethomepage.dev/icon: homepage.png
+    gethomepage.dev/name: Homepage
+spec:
+  tls:
+    - hosts:
+        - home.petkus.id.lv
+      secretName: homepage-certificate-secret
+  ingressClassName: nginx
+  rules:
+    - host: home.petkus.id.lv
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: homepage
+                port:
+                  number: 3000

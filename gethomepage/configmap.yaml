@@ -1,0 +1,229 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: homepage
+  namespace: homepage
+  labels:
+    app.kubernetes.io/name: homepage
+data:
+  kubernetes.yaml: |
+    mode: cluster
+    ingress: true
+  settings.yaml: |
+    headerStyle: boxed
+    useEqualHeights: true
+    layout:
+      Unraid:
+        style: row
+        columns: 4
+        header: false
+      Core:
+        style: row
+        columns: 4
+      Arr:
+        style: row
+        columns: 4
+      K3S:
+        style: row
+        columns: 4
+  custom.css: ""
+  custom.js: ""
+  bookmarks.yaml: |
+    - Unraid:
+        - Tower:
+          - icon: unraid.webp
+            href: http://192.168.20.3:8001/
+            description: Unleash Your Hardware
+        - Duplicati:
+          - icon: duplicati.webp
+            href: https://duplicati.petkus.id.lv
+            description: A new era for backup
+        - Profilarr:
+          - icon: profilarr.webp
+            href: https://profilarr.petkus.id.lv
+            description: Configuration management tool for Radarr/Sonarr
+        - Smlight:
+          - icon: smlight.webp
+            href: http://192.168.100.2/
+            description: SLZB-06 Zigbee coordinator
+  services.yaml: |
+    - Arr:
+        - Jellyfin:
+            icon: jellyfin.webp
+            href: https://jellyfin.petkus.id.lv
+            target: _blank
+            description: Media server
+            widget:
+              type: jellyfin
+              url: https://jellyfin.petkus.id.lv
+              key: "{{HOMEPAGE_VAR_JELLYFIN_KEY}}"
+              enableBlocks: true
+              enableNowPlaying: true
+              enableUser: true
+              showEpisodeNumber: true
+              expandOneStreamToTwoRows: false
+        - Sonarr:
+            icon: sonarr.webp
+            href: https://sonarr.petkus.id.lv
+            target: _blank
+            description: Series management
+            widget:
+              type: sonarr
+              url: https://sonarr.petkus.id.lv
+              key: "{{HOMEPAGE_VAR_SONARR_KEY}}"
+              enableQueue: true
+        - Radarr:
+            icon: radarr.webp
+            href: https://radarr.petkus.id.lv
+            target: _blank
+            description: Movie management
+            widget:
+              type: radarr
+              url: https://radarr.petkus.id.lv
+              key: "{{HOMEPAGE_VAR_RADARR_KEY}}"
+              enableQueue: true
+        - Bazarr:
+            icon: bazarr.webp
+            href: https://bazarr.petkus.id.lv
+            target: _blank
+            description: Subtitles management
+            widget:
+              type: bazarr
+              url: https://bazarr.petkus.id.lv
+              key: "{{HOMEPAGE_VAR_BAZARR_KEY}}"
+        - Prowlarr:
+            icon: prowlarr.webp
+            href: https://prowlarr.petkus.id.lv
+            target: _blank
+            description: Indexer manager
+            widget:
+              type: prowlarr
+              url: https://prowlarr.petkus.id.lv
+              key: "{{HOMEPAGE_VAR_PROWLARR_KEY}}"
+        - Lidarr:
+            icon: lidarr.webp
+            href: https://lidarr.petkus.id.lv
+            target: _blank
+            description: Music management
+            widget:
+              type: lidarr
+              url: https://lidarr.petkus.id.lv
+              key: "{{HOMEPAGE_VAR_LIDARR_KEY}}"
+        - qBittorrent:
+            icon: qbittorrent.webp
+            href: https://qbittorrent.petkus.id.lv
+            target: _blank
+            description: BitTorrent client
+            widget:
+              type: qbittorrent
+              url: https://qbittorrent.petkus.id.lv
+              username: dpe
+              password: "{{HOMEPAGE_VAR_QBITTORRENT_PASSWORD}}"
+              enableLeechProgress: true
+        - Gluetun:
+            icon: gluetun.webp
+            description: VPN client
+            widget:
+              type: gluetun
+              url: https://gluetun.petkus.id.lv
+              key: "{{HOMEPAGE_VAR_GLUETUN_KEY}}"
+              version: 2
+        - Seerr:
+            icon: seerr.webp
+            href: https://seerr.petkus.id.lv
+            description: Media requests
+            widget:
+              type: jellyseerr
+              url: https://seerr.petkus.id.lv
+              key: "{{HOMEPAGE_VAR_JELLYSEERR_KEY}}"
+        - Immich:
+            icon: immich.webp
+            href: https://photos.petkus.id.lv
+            description: Photos/video server
+            widget:
+              type: immich
+              url: https://photos.petkus.id.lv
+              key: "{{HOMEPAGE_VAR_IMMICH_KEY}}"
+              version: 2
+
+    - Core:
+        - Mikrotik-RB5009:
+            icon: mikrotik.webp
+            description: Main router
+            ping: 192.168.20.1
+            statusStyle: basic
+            widget:
+              type: mikrotik
+              url: http://192.168.20.1
+              username: dpe
+              password: "{{HOMEPAGE_VAR_MIKROTIK_RB5009_PASSWORD}}"
+              fields: ["uptime", "cpuLoad", "memoryUsed"]
+        - Mikrotik-HapAC2:
+            icon: mikrotik.webp
+            description: Access point
+            ping: 192.168.99.249
+            statusStyle: basic
+            widget:
+              type: mikrotik
+              url: http://192.168.99.249
+              username: dpe
+              password: "{{HOMEPAGE_VAR_MIKROTIK_HAPAC2_PASSWORD}}"
+              fields: ["uptime", "cpuLoad", "memoryUsed"]
+        - PiHole:
+            icon: pi-hole.webp
+            href: http://pi.hole
+            target: _blank
+            description: Network-wide Ad Blocking
+            ping: 192.168.20.2
+            statusStyle: basic
+            widget:
+              type: pihole
+              url: http://pi.hole
+              version: 6
+              key: "{{HOMEPAGE_VAR_PIHOLE_KEY}}"
+        - Nginx:
+            icon: nginx.webp
+            href: https://nginx.petkus.id.lv
+            description: Reverse proxy
+            widget:
+              type: npm
+              url: https://nginx.petkus.id.lv
+              username: didzis.petkus@hotmail.com
+              password: "{{HOMEPAGE_VAR_NGINX_PASSWORD}}"
+        - Gatus:
+            icon: gatus.webp
+            href: https://gatus.petkus.id.lv
+            description: Health dashboard
+            widget:
+              type: gatus
+              url: https://gatus.petkus.id.lv
+  widgets.yaml: |
+    - kubernetes:
+        cluster:
+          show: true
+          cpu: true
+          memory: true
+          showLabel: true
+          label: "k3s"
+        nodes:
+          show: true
+          cpu: true
+          memory: true
+          showLabel: true
+    - search:
+        provider: google
+        target: _blank
+        showSearchSuggestions: true
+    - datetime:
+        text_size: xl
+        locale: lv
+        format:
+          dateStyle: short
+          timeStyle: short
+    - openmeteo:
+        latitude: 56.551982
+        longitude: 21.015256
+        timezone: Europe/Riga
+        units: metric
+        cache: 5
+  docker.yaml: ""
