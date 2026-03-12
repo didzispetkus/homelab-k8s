@@ -23,6 +23,7 @@ spec:
     spec:
       serviceAccountName: lubelog-postgres-service-account
       automountServiceAccountToken: false
+      enableServiceLinks: false
       securityContext:
         fsGroup: 999  # postgres group
       containers:
@@ -64,22 +65,28 @@ spec:
                 - pg_isready -U "$POSTGRES_USER"
             failureThreshold: 30
             periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
           readinessProbe:
             exec:
               command:
                 - sh
                 - -c
                 - pg_isready -U "$POSTGRES_USER"
-            initialDelaySeconds: 10
+            failureThreshold: 3
             periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
           livenessProbe:
             exec:
               command:
                 - sh
                 - -c
                 - pg_isready -U "$POSTGRES_USER"
-            initialDelaySeconds: 30
+            failureThreshold: 3
             periodSeconds: 20
+            successThreshold: 1
+            timeoutSeconds: 2
           resources:
             requests:
               cpu: 100m

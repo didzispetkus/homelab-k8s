@@ -7,15 +7,14 @@ LubeLogger — vehicle maintenance and fuel economy tracker, backed by PostgreSQ
 | File | Description |
 |------|-------------|
 | `namespace.yaml` | Dedicated namespace |
-| `certificate.yaml` | TLS certificate via cert-manager |
 | `serviceaccount.yaml` | Dedicated service accounts for lubelog and postgres |
 | `db-sealedsecret.yaml` | Sealed Secret for database credentials |
 | `pvc.yaml` | 2Gi Longhorn PVC for app data and DataProtection keys |
-| `service-postgres.yaml` | Headless service for PostgreSQL StatefulSet |
+| `servicepostgres.yaml` | Headless service for PostgreSQL StatefulSet |
 | `statefulset.yaml` | PostgreSQL StatefulSet with Longhorn volume |
 | `deployment.yaml` | LubeLogger application deployment |
 | `service.yaml` | ClusterIP service for LubeLogger |
-| `ingress.yaml` | nginx ingress with TLS |
+| `httproute.yaml` | Traefik Gateway API HTTPRoute |
 
 ## Accessing
 
@@ -23,8 +22,7 @@ https://lubelog.petkus.id.lv
 
 ## Dependencies
 
-- cert-manager with `cloudflare-clusterissuer` ClusterIssuer
-- nginx ingress controller
+- Traefik Gateway API controller in `traefik` namespace
 - Longhorn storage
 - Sealed Secrets controller in `kube-system`
 
@@ -49,7 +47,6 @@ kubectl create secret generic lubelog-db-secret \
 ### Step 2: Apply all manifests
 
 ```bash
-kubectl create namespace lubelog
 kubectl apply -f .
 ```
 
@@ -110,14 +107,16 @@ The `lubelog-pvc` is shared between two mount points using `subPath`:
 
 | Mount path | subPath | Contents |
 |------------|---------|----------|
-| `/App/data` | `data/` | images, documents, config, db, translations |
+| `/App/data` | `data/` | images, documents, config, translations |
 | `/root/.aspnet/DataProtection-Keys` | `keys/` | ASP.NET DataProtection key files |
 
 ## Notes
 
 - `strategy: Recreate` is set on the lubelog deployment since the PVC is ReadWriteOnce
 - Both `/App/data` and `/root/.aspnet/DataProtection-Keys` share `lubelog-pvc` using `subPath` — `data/` and `keys/` subdirectories respectively
+- TLS is handled by the wildcard cert (`*.petkus.id.lv`) in the `traefik` namespace — no per-app certificate needed
 - PostgreSQL image is pinned to `18.1` — do not downgrade
 - `fsGroup: 999` and `runAsUser: 999` match the postgres user inside the official postgres image
 - `automountServiceAccountToken: false` is set on both service accounts — neither workload needs to call the Kubernetes API
+- `initialDelaySeconds` is not used on readiness/liveness probes — `startupProbe` already gates them until the container is ready, making the delay redundant
 - `Cookie is invalid or does not exist` warnings in logs after a restart are normal — they clear once you log in again
