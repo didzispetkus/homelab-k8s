@@ -1,25 +1,32 @@
 # Traefik Helm values for Gateway API (bare-metal k3s)
 # Chart: traefik/traefik
 # Traefik version: v3.3 (pinned via appVersion in chart)
-# NOTE: install with --skip-crds flag since Gateway API CRDs are managed manually (v1.5.0)
 
 # Disable default Ingress class — we use Gateway API only
-# ingress-nginx handles all existing Ingress resources during migration
 ingressClass:
   enabled: false
   isDefaultClass: false
 
-# Disable built-in dashboard (not needed, access via kubectl port-forward if required)
+# Disable built-in IngressRoute for dashboard — accessed via port-forward only
 ingressRoute:
   dashboard:
     enabled: false
+
+# Enable dashboard API on port 9000 (port-forward only, not exposed externally)
+api:
+  dashboard: true
+  insecure: true
+
+# Disable Prometheus metrics endpoints
+metrics:
+  prometheus: null
 
 # Enable Gateway API provider
 providers:
   kubernetesGateway:
     enabled: true
   kubernetesIngress:
-    enabled: false  # ingress-nginx handles Ingress resources during migration
+    enabled: false
 
 # Gateway configuration — Traefik will create the Gateway and GatewayClass automatically
 gateway:
@@ -55,6 +62,12 @@ service:
 
 # Ports — must match listener ports above
 ports:
+  traefik:
+    port: 9000
+    expose:
+      default: false  # not exposed externally — port-forward only
+    exposedPort: 9000
+    protocol: TCP
   web:
     port: 8000
     expose:
