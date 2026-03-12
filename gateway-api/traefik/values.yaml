@@ -1,0 +1,93 @@
+# Traefik Helm values for Gateway API (bare-metal k3s)
+# Chart: traefik/traefik
+# Traefik version: v3.3 (pinned via appVersion in chart)
+# NOTE: install with --skip-crds flag since Gateway API CRDs are managed manually (v1.5.0)
+
+# Disable default Ingress class — we use Gateway API only
+# ingress-nginx handles all existing Ingress resources during migration
+ingressClass:
+  enabled: false
+  isDefaultClass: false
+
+# Disable built-in dashboard (not needed, access via kubectl port-forward if required)
+ingressRoute:
+  dashboard:
+    enabled: false
+
+# Enable Gateway API provider
+providers:
+  kubernetesGateway:
+    enabled: true
+  kubernetesIngress:
+    enabled: false  # ingress-nginx handles Ingress resources during migration
+
+# Gateway configuration — Traefik will create the Gateway and GatewayClass automatically
+gateway:
+  enabled: true
+  name: main-gateway
+  namespace: ""  # defaults to traefik namespace
+  annotations:
+    cert-manager.io/cluster-issuer: cloudflare-clusterissuer
+  listeners:
+    web:
+      port: 8000
+      protocol: HTTP
+      namespacePolicy:
+        from: All
+    websecure:
+      port: 8443
+      protocol: HTTPS
+      namespacePolicy:
+        from: All
+      certificateRefs:
+        - kind: Secret
+          name: traefik-wildcard-tls
+          namespace: traefik
+
+# LoadBalancer service — MetalLB will assign this IP
+service:
+  enabled: true
+  type: LoadBalancer
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: 192.168.20.110
+  spec:
+    externalTrafficPolicy: Local
+
+# Ports — must match listener ports above
+ports:
+  web:
+    port: 8000
+    expose:
+      default: true
+    exposedPort: 80
+    protocol: TCP
+  websecure:
+    port: 8443
+    expose:
+      default: true
+    exposedPort: 443
+    protocol: TCP
+
+# Resource limits
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+# Security context
+deployment:
+  replicas: 1
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: [ALL]
+  readOnlyRootFilesystem: true
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 65532
+  runAsGroup: 65532
