@@ -266,8 +266,8 @@ Repeat Step 4 for each remaining app:
 | App | httproute.yaml | DNS Updated | Ingress Deleted |
 |-----|---------------|-------------|-----------------|
 | Homepage (`home.petkus.id.lv`) | ✅ | ✅ | ✅ |
-| Home Assistant (`haas.petkus.id.lv`) | ⬜ | ⬜ | ⬜ |
-| Longhorn (`longhorn.petkus.id.lv`) | ⬜ | ⬜ | ⬜ |
+| Home Assistant (`haas.petkus.id.lv`) | ✅ | ✅ | ✅ |
+| Longhorn (`longhorn.petkus.id.lv`) | ✅ | ✅ | ✅ |
 | Zigbee2MQTT (`zigbee2mqtt.petkus.id.lv`) | ⬜ | ⬜ | ⬜ |
 | Technitium (`technitium.petkus.id.lv`) | ⬜ | ⬜ | ⬜ |
 | LubeLogger (`lubelog.petkus.id.lv`) | ⬜ | ⬜ | ⬜ |
