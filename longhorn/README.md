@@ -6,8 +6,7 @@ Longhorn distributed block storage for k3s, installed via bare metal manifest.
 
 | File | Description |
 |------|-------------|
-| `certificate.yaml` | TLS certificate via cert-manager |
-| `ingress.yaml` | nginx ingress with TLS |
+| `httproute.yaml` | Traefik Gateway API HTTPRoute for the Longhorn UI |
 
 ## Accessing
 
@@ -15,8 +14,7 @@ https://longhorn.petkus.id.lv
 
 ## Dependencies
 
-- cert-manager with `cloudflare-clusterissuer` ClusterIssuer
-- nginx ingress controller
+- Traefik Gateway API controller in `traefik` namespace
 
 ## Installation
 
@@ -26,11 +24,10 @@ Longhorn is installed directly from the official manifest:
 kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.11.0/deploy/longhorn.yaml
 ```
 
-After installation, apply the ingress manifests:
+After installation, apply the HTTPRoute:
 
 ```bash
-kubectl apply -f certificate.yaml
-kubectl apply -f ingress.yaml
+kubectl apply -f httproute.yaml
 ```
 
 Verify all Longhorn pods are running:
@@ -65,9 +62,9 @@ kubectl rollout status deployment/longhorn-driver-deployer -n longhorn-system
 
 ## Post-installation configuration
 
-### Set frontend to single replica
+### Scale frontend to single replica
 
-After installation, scale the frontend deployment to a single replica to reduce resource usage on a homelab cluster:
+After installation, scale the UI deployment to one replica to reduce resource usage:
 
 ```bash
 kubectl scale deployment longhorn-ui -n longhorn-system --replicas=1
@@ -96,5 +93,5 @@ It is strongly recommended to configure an off-cluster backup target (S3, NFS) i
 ## Notes
 
 - Longhorn manifests are not stored in this repo — the official URL is the source of truth
-- `proxy-body-size: 10000m` is set on the ingress to support backing image uploads
-- No authentication is configured on the ingress — Longhorn UI is protected only by TLS. Consider adding basic auth if the cluster is exposed publicly
+- TLS is handled by the wildcard cert (`*.petkus.id.lv`) in the `traefik` namespace — no per-app certificate needed
+- No authentication is configured on the HTTPRoute — Longhorn UI is protected only by TLS. Consider adding basic auth if the cluster is exposed publicly
