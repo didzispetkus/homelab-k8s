@@ -269,7 +269,7 @@ Repeat Step 4 for each remaining app:
 | Home Assistant (`haas.petkus.id.lv`) | ✅ | ✅ | ✅ |
 | Longhorn (`longhorn.petkus.id.lv`) | ✅ | ✅ | ✅ |
 | Zigbee2MQTT (`zigbee2mqtt.petkus.id.lv`) | ✅ | ✅ | ✅ |
-| Technitium (`technitium.petkus.id.lv`) | ⬜ | ⬜ | ⬜ |
+| Technitium (`technitium.petkus.id.lv`) | ✅ | ✅ | ✅ |
 | LubeLogger (`lubelog.petkus.id.lv`) | ✅ | ✅ | ✅ |
 
 Once all apps are migrated, remove ingress-nginx:

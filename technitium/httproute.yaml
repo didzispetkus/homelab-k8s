@@ -1,0 +1,20 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: technitium
+  namespace: technitium
+spec:
+  parentRefs:
+    - name: main-gateway
+      namespace: traefik
+      sectionName: websecure
+  hostnames:
+    - "technitium.petkus.id.lv"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: technitium-web-service
+          port: 80
