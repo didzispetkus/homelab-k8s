@@ -7,15 +7,14 @@
 | File | Description |
 |------|-------------|
 | `namespace.yaml` | Dedicated namespace |
-| `certificate.yaml` | TLS certificate via cert-manager |
 | `serviceaccount.yaml` | Service account for Kubernetes discovery |
-| `secret.yaml` | Service account token secret |
+| `secret.yaml` | Long-lived service account token (required for cluster discovery) |
 | `clusterrole.yaml` | ClusterRole and ClusterRoleBinding for k8s API access |
 | `sealedsecret.yaml` | Sealed Secret for all widget API keys and passwords |
 | `configmap.yaml` | Homepage configuration with `{{HOMEPAGE_VAR_*}}` placeholders |
 | `deployment.yaml` | Homepage deployment |
 | `service.yaml` | ClusterIP service on port 3000 |
-| `ingress.yaml` | nginx ingress with TLS |
+| `httproute.yaml` | Traefik Gateway API HTTPRoute |
 
 ## Accessing
 
@@ -23,8 +22,7 @@ https://home.petkus.id.lv
 
 ## Dependencies
 
-- cert-manager with `cloudflare-clusterissuer` ClusterIssuer
-- nginx ingress controller
+- Traefik Gateway API controller in `traefik` namespace
 - Sealed Secrets controller in `kube-system`
 
 ## Deployment
@@ -58,7 +56,6 @@ kubectl create secret generic homepage-secrets \
 ### Step 2: Apply all manifests
 
 ```bash
-kubectl create namespace homepage
 kubectl apply -f .
 ```
 
@@ -79,20 +76,21 @@ key: "{{HOMEPAGE_VAR_JELLYFIN_KEY}}"
 
 ### Adding a new secret
 
-To add a new widget secret, add a new `--from-literal` to the kubeseal command and re-seal. Then reference it in `configmap.yaml` as `"{{HOMEPAGE_VAR_YOUR_KEY}}"`.
+Add a new `--from-literal` to the kubeseal command and re-seal. Then reference it in `configmap.yaml` as `"{{HOMEPAGE_VAR_YOUR_KEY}}"`.
 
 ### Rotating a secret
 
 ```bash
-# Delete the existing SealedSecret
 kubectl delete sealedsecret homepage-secrets -n homepage
 
-# Re-generate with updated values and apply
 kubectl create secret generic homepage-secrets \
   --namespace homepage \
   ... \
   --dry-run=client -o yaml | \
-  kubeseal ... > sealedsecret.yaml
+  kubeseal \
+    --controller-name=sealed-secrets-controller \
+    --controller-namespace=kube-system \
+    --format yaml > sealedsecret.yaml
 
 kubectl apply -f sealedsecret.yaml
 kubectl rollout restart deployment/homepage -n homepage
@@ -111,8 +109,8 @@ Check releases at https://github.com/gethomepage/homepage/releases.
 
 ## Notes
 
-- `automountServiceAccountToken: true` is intentionally kept — homepage requires it for Kubernetes pod/node/ingress discovery
-- `enableServiceLinks: false` — prevents unnecessary service environment variables being injected
-- `imagePullPolicy: IfNotPresent` — changed from `Always` since the image is pinned to a specific version
+- `automountServiceAccountToken: true` is intentionally set on the deployment — homepage requires it for Kubernetes pod/node/HTTPRoute discovery
+- `enableServiceLinks: false` — prevents Kubernetes injecting service env vars into the pod, which could collide with `HOMEPAGE_VAR_*` vars
+- TLS is handled by the wildcard cert (`*.petkus.id.lv`) in the `traefik` namespace — no per-app certificate needed
 - Widget secrets in `configmap.yaml` use `{{HOMEPAGE_VAR_*}}` placeholders — homepage substitutes these at runtime from environment variables
-- The `gethomepage.dev/enabled: "false"` annotation on the ingress prevents homepage from discovering itself in a loop
+- `secret.yaml` is a `kubernetes.io/service-account-token` type — it contains no sensitive data at commit time; Kubernetes populates the actual token after apply
