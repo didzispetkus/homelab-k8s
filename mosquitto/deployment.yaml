@@ -20,6 +20,7 @@ spec:
         app.kubernetes.io/version: "2.0.22"
     spec:
       serviceAccountName: mosquitto-service-account
+      enableServiceLinks: false
       securityContext:
         fsGroup: 1883
       volumes:
@@ -37,8 +38,12 @@ spec:
           image: eclipse-mosquitto:2.0.22
           imagePullPolicy: IfNotPresent
           securityContext:
+            allowPrivilegeEscalation: false
             runAsUser: 1883
             runAsGroup: 1883
+            capabilities:
+              drop:
+                - ALL
           ports:
             - containerPort: 1883
               name: mqtt
@@ -59,6 +64,8 @@ spec:
               port: 1883
             failureThreshold: 30
             periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
           livenessProbe:
             tcpSocket:
               port: 1883
