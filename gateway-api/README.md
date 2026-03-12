@@ -21,10 +21,6 @@ Browser
 TLS is terminated at Traefik using a wildcard cert (`*.petkus.id.lv`) issued
 by cert-manager via Cloudflare DNS-01.
 
-During migration, ingress-nginx runs in parallel on its existing IP.
-Apps are moved one at a time by applying an HTTPRoute and updating the
-Technitium DNS record for that app.
-
 ---
 
 ## Directory Structure
@@ -39,13 +35,29 @@ gateway-api/
 cert-manager/
 └── gateway-api-patch.yaml # Adds ExperimentalGatewayAPISupport feature gate
 
+home-assistant/
+├── middleware.yaml        # Traefik buffering middleware for 50Mi upload limit
+└── httproute.yaml
+
 homepage/
-├── httproute.yaml         # NEW — replaces ingress.yaml after migration
-└── ingress.yaml           # Keep until migration confirmed, then delete
+└── httproute.yaml
+
+longhorn/
+└── httproute.yaml
+
+lubelog/
+└── httproute.yaml
+
+technitium/
+└── httproute.yaml
+
+zigbee2mqtt/
+└── httproute.yaml
 ```
 
-Each app's `httproute.yaml` lives alongside its other manifests in its own
-folder — not inside `gateway-api/`.
+Each app's `httproute.yaml` lives alongside its other manifests in its own folder.
+Per-app `certificate.yaml` files have been removed — TLS is handled centrally by
+the wildcard cert in the `traefik` namespace.
 
 ---
 
@@ -272,11 +284,7 @@ Repeat Step 4 for each remaining app:
 | Technitium (`technitium.petkus.id.lv`) | ✅ | ✅ | ✅ |
 | LubeLogger (`lubelog.petkus.id.lv`) | ✅ | ✅ | ✅ |
 
-Once all apps are migrated, remove ingress-nginx:
-```bash
-kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.14.3/deploy/static/provider/baremetal/deploy.yaml
-kubectl delete -f ingress-nginx/loadbalancer-service.yaml
-```
+✅ Migration complete. ingress-nginx has been removed from the cluster.
 
 ---
 

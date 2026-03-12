@@ -20,6 +20,7 @@ spec:
         app.kubernetes.io/version: "2.9.1"
     spec:
       serviceAccountName: zigbee2mqtt-service-account
+      enableServiceLinks: false
       securityContext: {}
       volumes:
         - name: data
@@ -39,8 +40,7 @@ spec:
               value: "Europe/Riga"
             - name: ZIGBEE2MQTT_DATA
               value: "/data"
-            - name: ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_ENABLED
-              value: "true"
+            # Serial / coordinator
             - name: ZIGBEE2MQTT_CONFIG_SERIAL_PORT
               value: "tcp://192.168.100.2:6638"
             - name: ZIGBEE2MQTT_CONFIG_SERIAL_BAUDRATE
@@ -49,6 +49,7 @@ spec:
               value: "zstack"
             - name: ZIGBEE2MQTT_CONFIG_SERIAL_DISABLE_LED
               value: "false"
+            # MQTT
             - name: ZIGBEE2MQTT_CONFIG_MQTT_SERVER
               value: "mqtt://mosquitto-service.mosquitto.svc.cluster.local:1883"
             - name: ZIGBEE2MQTT_CONFIG_MQTT_USER
@@ -58,38 +59,37 @@ spec:
                 secretKeyRef:
                   name: zigbee2mqtt-mqtt-secret
                   key: mqtt-password
-            - name: ZIGBEE2MQTT_CONFIG_ADVANCED_TRANSMIT_POWER
-              value: "20"
+            # Network
             - name: ZIGBEE2MQTT_CONFIG_ADVANCED_CHANNEL
               value: "25"
-            - name: ZIGBEE2MQTT_CONFIG_FRONTEND_ENABLED
-              value: "true"
-            - name: ZIGBEE2MQTT_CONFIG_FRONTEND_PACKAGE
-              value: "zigbee2mqtt-windfront"
-            # Disable joining after initial setup
-            - name: ZIGBEE2MQTT_CONFIG_PERMIT_JOIN
-              value: "false"
-            # Fixed PAN ID — replace with your generated value
+            - name: ZIGBEE2MQTT_CONFIG_ADVANCED_TRANSMIT_POWER
+              value: "9"
             - name: ZIGBEE2MQTT_CONFIG_ADVANCED_PAN_ID
               value: "24037"
-            # Network key from SealedSecret
             - name: ZIGBEE2MQTT_CONFIG_ADVANCED_NETWORK_KEY
               valueFrom:
                 secretKeyRef:
                   name: zigbee2mqtt-mqtt-secret
                   key: network-key
-            # Log level
             - name: ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_LEVEL
               value: "info"
-            # Watchdog
             - name: ZIGBEE2MQTT_CONFIG_ADVANCED_WATCHDOG
               value: "default"
+            # Frontend
+            - name: ZIGBEE2MQTT_CONFIG_FRONTEND_ENABLED
+              value: "true"
+            - name: ZIGBEE2MQTT_CONFIG_FRONTEND_PACKAGE
+              value: "zigbee2mqtt-windfront"
+            # Home Assistant integration
             - name: ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_ENABLED
               value: "true"
             - name: ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_DISCOVERY_TOPIC
               value: "homeassistant"
             - name: ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_STATUS_TOPIC
               value: "homeassistant/status"
+            # Joining — disable after initial setup
+            - name: ZIGBEE2MQTT_CONFIG_PERMIT_JOIN
+              value: "false"
           ports:
             - containerPort: 8080
               name: http
