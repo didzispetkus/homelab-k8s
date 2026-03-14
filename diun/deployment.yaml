@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: diun
+  namespace: diun
+  labels:
+    app.kubernetes.io/name: diun
+    app.kubernetes.io/version: "4.31.0"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: diun
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: diun
+        app.kubernetes.io/version: "4.31.0"
+    spec:
+      serviceAccountName: diun
+      automountServiceAccountToken: true
+      enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: diun-data
+      containers:
+        - name: diun
+          image: crazymax/diun:4.31.0
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+          args: ["serve"]
+          env:
+            - name: TZ
+              value: Europe/Riga
+            # Watch config
+            - name: DIUN_WATCH_WORKERS
+              value: "20"
+            - name: DIUN_WATCH_SCHEDULE
+              value: "0 19 * * *"
+            - name: DIUN_WATCH_JITTER
+              value: "30s"
+            # Database
+            - name: DIUN_DB_PATH
+              value: /data/diun.db
+            # Telegram
+            - name: DIUN_NOTIF_TELEGRAM_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: diun-secret
+                  key: DIUN_NOTIF_TELEGRAM_TOKEN
+            - name: DIUN_NOTIF_TELEGRAM_CHATIDS
+              valueFrom:
+                secretKeyRef:
+                  name: diun-secret
+                  key: DIUN_NOTIF_TELEGRAM_CHATIDS
+            # Kubernetes provider
+            - name: DIUN_PROVIDERS_KUBERNETES_WATCHBYDEFAULT
+              value: "true"
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
