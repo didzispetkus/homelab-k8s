@@ -51,17 +51,17 @@ data:
   bookmarks.yaml: |
     - Unraid:
         - Tower:
-          - icon: unraid.webp
+          - icon: sh-unraid.webp
             href: http://192.168.20.3:8001/
             description: Unleash Your Hardware
-        - Duplicati:
-          - icon: duplicati.webp
-            href: https://duplicati.petkus.id.lv
-            description: A new era for backup
         - Smlight:
-          - icon: smlight.webp
+          - icon: sh-smlight.webp
             href: http://192.168.100.2/
             description: SLZB-06 Zigbee coordinator
+        - Brother:
+          - icon: sh-brother.webp
+            href: http://192.168.10.8/
+            description: Mono laser printer
   services.yaml: |
     - Edge:
       - Mikrotik-RB5009:
