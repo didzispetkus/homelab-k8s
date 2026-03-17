@@ -104,27 +104,30 @@ Configure in **Longhorn UI → Settings → General**:
 > showmount -e 192.168.20.3
 > ```
 
-### Recurring backup jobs
+### Recurring jobs
 
-Two recurring jobs are configured in **Longhorn UI → Recurring Jobs**:
+Four recurring jobs are configured in **Longhorn UI → Recurring Jobs**:
 
 | Name | Task | Cron | Retain | Description |
 |------|------|------|--------|-------------|
 | `daily-backup` | Backup | `0 2 * * *` | `7` | Daily at 2am, keep 7 days |
 | `weekly-backup` | Backup | `0 3 * * 0` | `4` | Sunday at 3am, keep 4 weeks |
+| `daily-snapshot-cleanup` | Snapshot Cleanup | `30 3 * * *` | — | Daily at 3:30am, removes orphaned snapshots |
+| `weekly-trim` | Filesystem Trim | `0 4 * * 0` | — | Sunday at 4am, reclaims unused blocks |
 
-### Volumes backed up
+### Jobs assigned per volume
 
-The following volumes have both recurring jobs assigned:
+| PVC | Namespace | Backup | Snapshot Cleanup | Trim |
+|-----|-----------|--------|-----------------|------|
+| `home-assistant-config` | `home-assistant` | ✅ | ✅ | ✅ |
+| `lubelog-data` | `lubelog` | ✅ | ✅ | ✅ |
+| `lubelog-postgres` | `lubelog` | ✅ | ✅ | ✅ |
+| `technitium-dnsserver-pvc` | `technitium` | ✅ | ✅ | ✅ |
+| `diun-data` | `diun` | ✅ | ✅ | ✅ |
+| `zigbee2mqtt-data` | `zigbee2mqtt` | ❌ | ✅ | ✅ |
+| `mosquitto-data` | `mosquitto` | ❌ | ✅ | ✅ |
 
-| PVC | Namespace | Reasoning |
-|-----|-----------|-----------|
-| `home-assistant-config` | `home-assistant` | Automations, devices, history |
-| `lubelog-data` | `lubelog` | Vehicle maintenance records |
-| `lubelog-postgres` | `lubelog` | LubeLogger database |
-| `technitium-dnsserver-pvc` | `technitium` | DNS zones and config |
-
-To assign jobs to a volume: **Longhorn UI → Volumes** → click volume → **Edit Recurring Jobs** → add `daily-backup` and `weekly-backup`.
+To assign jobs to a volume: **Longhorn UI → Volumes** → click volume → **Edit Recurring Jobs**.
 
 ### Offsite backups (Duplicati)
 
