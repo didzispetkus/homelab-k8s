@@ -155,11 +155,15 @@ data:
           description: Analytics & monitoring
 
     - Storage:
-      - Duplicati:
-          icon: sh-duplicati.webp
-          href: https://duplicati.petkus.id.lv/
+      - Backrest:
+          icon: sh-backrest-light.webp
+          href: https://backrest.petkus.id.lv/
           target: _blank
           description: Backups
+          widget:
+            type: backrest
+            url: https://backrest.petkus.id.lv
+
       - Longhorn:
           icon: sh-rancher-longhorn.webp
           href: https://longhorn.petkus.id.lv/
