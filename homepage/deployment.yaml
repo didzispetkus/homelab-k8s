@@ -5,7 +5,7 @@ metadata:
   namespace: homepage
   labels:
     app.kubernetes.io/name: homepage
-    app.kubernetes.io/version: "v1.10.1"
+    app.kubernetes.io/version: "v1.12.3"
 spec:
   replicas: 1
   revisionHistoryLimit: 3
@@ -18,7 +18,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: homepage
-        app.kubernetes.io/version: "v1.10.1"
+        app.kubernetes.io/version: "v1.12.3"
     spec:
       serviceAccountName: homepage
       automountServiceAccountToken: true  # required for k8s service discovery
@@ -27,7 +27,7 @@ spec:
       securityContext: {}
       containers:
         - name: homepage
-          image: "ghcr.io/gethomepage/homepage:v1.10.1"
+          image: "ghcr.io/gethomepage/homepage:v1.12.3"
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false

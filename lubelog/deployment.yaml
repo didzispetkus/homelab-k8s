@@ -5,7 +5,7 @@ metadata:
   namespace: lubelog
   labels:
     app.kubernetes.io/name: lubelog
-    app.kubernetes.io/version: "1.6.1"
+    app.kubernetes.io/version: "1.6.3"
 spec:
   replicas: 1
   strategy:
@@ -17,7 +17,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: lubelog
-        app.kubernetes.io/version: "1.6.1"
+        app.kubernetes.io/version: "1.6.3"
     spec:
       serviceAccountName: lubelog-service-account
       automountServiceAccountToken: false
@@ -29,7 +29,7 @@ spec:
             claimName: lubelog-pvc
       containers:
         - name: lubelog
-          image: ghcr.io/hargata/lubelogger:v1.6.1
+          image: ghcr.io/hargata/lubelogger:v1.6.3
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false

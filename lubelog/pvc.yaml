@@ -5,7 +5,7 @@ metadata:
   namespace: lubelog
   labels:
     app.kubernetes.io/name: lubelog
-    app.kubernetes.io/version: "1.6.1"
+    app.kubernetes.io/version: "1.6.3"
 spec:
   accessModes:
     - ReadWriteOnce

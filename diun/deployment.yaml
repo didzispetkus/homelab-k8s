@@ -45,11 +45,20 @@ spec:
           env:
             - name: TZ
               value: Europe/Riga
+            # Defaults
+            - name: DIUN_DEFAULTS_WATCHREPO
+              value: "true"
+            - name: DIUN_DEFAULTS_MAXTAGS
+              value: "1"
+            - name: DIUN_DEFAULTS_SORTTAGS
+              value: "semver"
+            - name: DIUN_DEFAULTS_INCLUDETAGS
+              value: "^v?\\d+\\.\\d+\\.\\d+$"
             # Watch config
             - name: DIUN_WATCH_WORKERS
               value: "20"
             - name: DIUN_WATCH_SCHEDULE
-              value: "0 19 * * *"
+              value: "0 8,14,20 * * *"
             - name: DIUN_WATCH_JITTER
               value: "30s"
             # Database

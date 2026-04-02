@@ -5,7 +5,7 @@ metadata:
   namespace: lubelog
   labels:
     app.kubernetes.io/name: lubelog-postgres
-    app.kubernetes.io/version: "1.6.1"
+    app.kubernetes.io/version: "1.6.3"
 spec:
   serviceName: lubelog-postgres
   replicas: 1
@@ -19,7 +19,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: lubelog-postgres
-        app.kubernetes.io/version: "1.6.1"
+        app.kubernetes.io/version: "1.6.3"
     spec:
       serviceAccountName: lubelog-postgres-service-account
       automountServiceAccountToken: false
