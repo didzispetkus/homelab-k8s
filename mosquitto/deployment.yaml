@@ -5,7 +5,7 @@ metadata:
   namespace: mosquitto
   labels:
     app.kubernetes.io/name: mosquitto
-    app.kubernetes.io/version: "2.0.22"
+    app.kubernetes.io/version: "2.1.2"
 spec:
   replicas: 1
   selector:
@@ -17,7 +17,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: mosquitto
-        app.kubernetes.io/version: "2.0.22"
+        app.kubernetes.io/version: "2.1.2"
     spec:
       serviceAccountName: mosquitto-service-account
       enableServiceLinks: false
@@ -35,7 +35,7 @@ spec:
             claimName: mosquitto-data
       containers:
         - name: mosquitto
-          image: eclipse-mosquitto:2.0.22
+          image: eclipse-mosquitto:2.1.2-alpine
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false
@@ -44,6 +44,11 @@ spec:
             capabilities:
               drop:
                 - ALL
+          env:
+            - name: TZ
+              value: Europe/Riga
+            - name: MOSQUITTO_UNSAFE_ALLOW_SYMLINKS
+              value: "1"
           ports:
             - containerPort: 1883
               name: mqtt
