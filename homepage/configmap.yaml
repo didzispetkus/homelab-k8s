@@ -184,6 +184,15 @@ data:
           description: Zigbee to MQTT bridge
           namespace: zigbee2mqtt
           app: zigbee2mqtt
+      - ESPHome:
+          icon: esphome.webp
+          href: https://esphome.petkus.id.lv
+          description: Custom firmware for ESP32 boards 
+          widget:
+            type: esphome
+            url: https://esphome.petkus.id.lv
+          namespace: esphome
+          app: esphome
       - LubeLogger:
           icon: sh-lubelogger.webp
           href: https://lubelog.petkus.id.lv/
@@ -191,6 +200,13 @@ data:
           description: Track the fuel economy of your vehicles
           namespace: lubelog
           app: lubelog
+      - RomM:
+          icon: romm.webp
+          href: https://romm.petkus.id.lv
+          description: ROM Manager
+          widget:
+            type: romm
+            url: https://romm.petkus.id.lv
 
     - Media:
       - Gluetun:
