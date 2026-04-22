@@ -5,7 +5,7 @@ metadata:
   namespace: esphome
   labels:
     app.kubernetes.io/name: esphome
-    app.kubernetes.io/version: "2026.4.0"
+    app.kubernetes.io/version: "2026.4.1"
 spec:
   replicas: 1
   selector:
@@ -17,7 +17,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: esphome
-        app.kubernetes.io/version: "2026.4.0"
+        app.kubernetes.io/version: "2026.4.1"
     spec:
       serviceAccountName: esphome
       automountServiceAccountToken: false
@@ -32,7 +32,7 @@ spec:
           emptyDir: {}
       containers:
         - name: esphome
-          image: ghcr.io/esphome/esphome:2026.4.0
+          image: ghcr.io/esphome/esphome:2026.4.1
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ

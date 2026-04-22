@@ -5,7 +5,7 @@ metadata:
   namespace: esphome
   labels:
     app.kubernetes.io/name: esphome
-    app.kubernetes.io/version: "2026.4.0"
+    app.kubernetes.io/version: "2026.4.1"
 spec:
   type: ClusterIP
   ports:
