@@ -5,7 +5,7 @@ metadata:
   namespace: technitium
   labels:
     app.kubernetes.io/name: technitium-dnsserver
-    app.kubernetes.io/version: "14.3.0"
+    app.kubernetes.io/version: "15.0.0"
 spec:
   accessModes:
     - ReadWriteOnce

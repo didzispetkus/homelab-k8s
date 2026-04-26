@@ -5,7 +5,7 @@ metadata:
   namespace: technitium
   labels:
     app.kubernetes.io/name: technitium-dnsserver
-    app.kubernetes.io/version: "14.3.0"
+    app.kubernetes.io/version: "15.0.0"
 spec:
   replicas: 1
   revisionHistoryLimit: 3
@@ -18,7 +18,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: technitium-dnsserver
-        app.kubernetes.io/version: "14.3.0"
+        app.kubernetes.io/version: "15.0.0"
     spec:
       serviceAccountName: technitium-service-account
       automountServiceAccountToken: false
@@ -31,7 +31,7 @@ spec:
             claimName: technitium-dnsserver-pvc
       containers:
         - name: technitium-dnsserver
-          image: "technitium/dns-server:14.3.0"
+          image: "technitium/dns-server:15.0.0"
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false
