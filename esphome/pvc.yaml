@@ -5,7 +5,7 @@ metadata:
   namespace: esphome
   labels:
     app.kubernetes.io/name: esphome
-    app.kubernetes.io/version: "2026.4.2"
+    app.kubernetes.io/version: "2026.4.3"
 spec:
   accessModes:
     - ReadWriteOnce
