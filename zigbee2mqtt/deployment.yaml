@@ -5,7 +5,7 @@ metadata:
   namespace: zigbee2mqtt
   labels:
     app.kubernetes.io/name: zigbee2mqtt
-    app.kubernetes.io/version: "2.9.2"
+    app.kubernetes.io/version: "2.10.0"
 spec:
   replicas: 1
   selector:
@@ -17,7 +17,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: zigbee2mqtt
-        app.kubernetes.io/version: "2.9.2"
+        app.kubernetes.io/version: "2.10.0"
     spec:
       serviceAccountName: zigbee2mqtt-service-account
       enableServiceLinks: false
@@ -28,7 +28,7 @@ spec:
             claimName: zigbee2mqtt-data
       containers:
         - name: zigbee2mqtt
-          image: koenkk/zigbee2mqtt:2.9.2
+          image: koenkk/zigbee2mqtt:2.10.0
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false

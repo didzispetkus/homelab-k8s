@@ -5,7 +5,7 @@ metadata:
   namespace: zigbee2mqtt
   labels:
     app.kubernetes.io/name: zigbee2mqtt
-    app.kubernetes.io/version: "2.9.2"
+    app.kubernetes.io/version: "2.10.0"
 spec:
   storageClassName: longhorn
   resources:
