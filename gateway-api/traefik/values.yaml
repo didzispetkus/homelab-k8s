@@ -90,10 +90,10 @@ resources:
     cpu: 500m
     memory: 256Mi
 
-# Security context
 deployment:
-  replicas: 1
+  replicas: 3
 
+# Security context
 securityContext:
   allowPrivilegeEscalation: false
   capabilities:
