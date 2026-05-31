@@ -4,7 +4,7 @@ metadata:
   name: diun
   labels:
     app.kubernetes.io/name: diun
-    app.kubernetes.io/version: "4.32.0"
+    app.kubernetes.io/version: "4.33.0"
 rules:
   - apiGroups: [""]
     resources: ["pods"]
@@ -19,7 +19,7 @@ metadata:
   name: diun
   labels:
     app.kubernetes.io/name: diun
-    app.kubernetes.io/version: "4.32.0"
+    app.kubernetes.io/version: "4.33.0"
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole

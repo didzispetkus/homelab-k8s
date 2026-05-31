@@ -5,7 +5,7 @@ metadata:
   namespace: diun
   labels:
     app.kubernetes.io/name: diun
-    app.kubernetes.io/version: "4.32.0"
+    app.kubernetes.io/version: "4.33.0"
 spec:
   replicas: 1
   selector:
@@ -17,7 +17,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: diun
-        app.kubernetes.io/version: "4.32.0"
+        app.kubernetes.io/version: "4.33.0"
     spec:
       serviceAccountName: diun
       automountServiceAccountToken: true
@@ -33,7 +33,7 @@ spec:
             claimName: diun-data
       containers:
         - name: diun
-          image: crazymax/diun:4.32.0
+          image: crazymax/diun:4.33.0
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false
@@ -81,6 +81,15 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /data
+          livenessProbe:
+            exec:
+              command:
+                - diun
+                - healthcheck
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
           resources:
             requests:
               cpu: 10m
