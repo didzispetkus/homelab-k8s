@@ -72,19 +72,19 @@ data:
           widget:
             type: mikrotik
             url: http://192.168.20.1
-            username: dpe
+            username: homepage-widget
             password: "{{HOMEPAGE_VAR_MIKROTIK_RB5009_PASSWORD}}"
             fields: ["uptime", "cpuLoad", "memoryUsed"]
-      - Mikrotik-HapAC2:
+      - Mikrotik-CapAX:
           icon: sh-mikrotik-light.webp
           description: Access point
-          ping: 192.168.99.249
+          ping: 192.168.99.248
           statusStyle: basic
           widget:
             type: mikrotik
-            url: http://192.168.99.249
-            username: dpe
-            password: "{{HOMEPAGE_VAR_MIKROTIK_HAPAC2_PASSWORD}}"
+            url: http://192.168.99.248
+            username: homepage-widget
+            password: "{{HOMEPAGE_VAR_MIKROTIK_CAPAX_PASSWORD}}"
             fields: ["uptime", "cpuLoad", "memoryUsed"]
       - Mikrotik-CSS610:
           icon: sh-mikrotik-light.webp
