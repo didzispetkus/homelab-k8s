@@ -5,7 +5,7 @@ metadata:
   namespace: lubelog
   labels:
     app.kubernetes.io/name: lubelog
-    app.kubernetes.io/version: "1.6.8"
+    app.kubernetes.io/version: "1.6.9"
 spec:
   type: ClusterIP
   selector:
