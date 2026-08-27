@@ -1,6 +1,5 @@
 # Traefik Helm values for Gateway API (bare-metal k3s)
 # Chart: traefik/traefik
-# Traefik version: v3.3 (pinned via appVersion in chart)
 
 # Disable default Ingress class — we use Gateway API only
 ingressClass:
@@ -17,6 +16,16 @@ api:
   dashboard: true
   insecure: true
 
+# -- See [logs reference](https://doc.traefik.io/traefik/reference/install-configuration/observability/logs-and-accesslogs/)
+log:
+  level: "INFO" 
+
+# -- See [access logs reference](https://doc.traefik.io/traefik/reference/install-configuration/observability/logs-and-accesslogs/)
+accessLog:
+  enabled: true
+  filters:
+    minDuration: "500ms"  
+
 # Disable Prometheus metrics endpoints
 metrics:
   prometheus: null
@@ -27,6 +36,15 @@ providers:
     enabled: true
   kubernetesIngress:
     enabled: false
+  kubernetesCRD:
+    # Explicitly opt in to collision-safe naming
+    safeNaming: false    
+
+# Traefik experimental features
+experimental:
+  kubernetesGateway:
+    # -- Enable traefik experimental GatewayClass CRD
+    enabled: true
 
 # Gateway configuration — Traefik will create the Gateway and GatewayClass automatically
 gateway:
@@ -104,3 +122,11 @@ podSecurityContext:
   runAsNonRoot: true
   runAsUser: 65532
   runAsGroup: 65532
+
+# Entry point option isn't exposed via `ports.*`, so pass it as a CLI arg
+additionalArguments:
+  - "--entryPoints.web.http.aliasHeadersStrategy=delete"
+  - "--entryPoints.websecure.http.aliasHeadersStrategy=delete"
+  - "--entryPoints.traefik.http.aliasHeadersStrategy=delete"
+  - "--entryPoints.metrics.http.aliasHeadersStrategy=delete"
+  - "--providers.kubernetescrd.safeNaming=true"
