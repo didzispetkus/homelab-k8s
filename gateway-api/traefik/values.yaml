@@ -24,7 +24,8 @@ log:
 accessLog:
   enabled: true
   filters:
-    minDuration: "500ms"  
+    statusCodes: "400-599"
+    minDuration: "1s"  
 
 # Disable Prometheus metrics endpoints
 metrics:
@@ -38,7 +39,7 @@ providers:
     enabled: false
   kubernetesCRD:
     # Explicitly opt in to collision-safe naming
-    safeNaming: false    
+    safeNaming: true    
 
 # Traefik experimental features
 experimental:
@@ -78,6 +79,7 @@ service:
   spec:
     externalTrafficPolicy: Local
 
+
 # Ports — must match listener ports above
 ports:
   traefik:
@@ -109,7 +111,31 @@ resources:
     memory: 256Mi
 
 deployment:
-  replicas: 3
+  replicas: null # autoscaling enabled, so replicas are managed by HPA
+  spread: true
+
+autoscaling:
+  enabled: true
+  minReplicas:  1
+  maxReplicas:  3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80 
+
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+                - traefik
+        topologyKey: kubernetes.io/hostname          
 
 # Security context
 securityContext:
@@ -129,4 +155,3 @@ additionalArguments:
   - "--entryPoints.websecure.http.aliasHeadersStrategy=delete"
   - "--entryPoints.traefik.http.aliasHeadersStrategy=delete"
   - "--entryPoints.metrics.http.aliasHeadersStrategy=delete"
-  - "--providers.kubernetescrd.safeNaming=true"
