@@ -118,15 +118,14 @@ data:
             url: http://pi.hole
             version: 6
             key: "{{HOMEPAGE_VAR_PIHOLE_KEY}}"
-      - Nginx:
-          icon: sh-nginx-proxy-manager.webp
-          href: https://nginx.petkus.id.lv
-          description: Proxy manager
+      - Traefik:
+          icon: traefik.webp
+          href: https://traefik.petkus.id.lv
+          description: Reverse proxy
           widget:
-            type: npm
-            url: https://nginx.petkus.id.lv
-            username: didzis.petkus@hotmail.com
-            password: "{{HOMEPAGE_VAR_NGINX_PASSWORD}}"
+            type: traefik
+            url: https://traefik.petkus.id.lv
+            fields: ["routers", "services", "middleware"]
       - Gatus:
           icon: sh-gatus.webp
           href: https://gatus.petkus.id.lv
