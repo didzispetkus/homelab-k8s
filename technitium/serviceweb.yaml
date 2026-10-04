@@ -5,7 +5,7 @@ metadata:
   namespace: technitium
   labels:
     app.kubernetes.io/name: technitium-dnsserver
-    app.kubernetes.io/version: "15.5.1"
+    app.kubernetes.io/version: "15.6.0"
 spec:
   type: ClusterIP
   selector:
